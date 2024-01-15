@@ -1,14 +1,13 @@
 /*                                       Embedded Input Module by Alexander "maylizbeth" Gilbertson / B512325
- *                                                          !!!!!READ THIS FIRST!!!!!
  *                                                          
  *      EmbeddedInputModule exists to allow better gamepad support for student projects. Designed to be a direct drag and drop replacement for
  *      the classic Input module (LegacyInputModule) using Unity's new InputSystem package to port and give all functions hot-plug device support. 
- *                                                  More information can be found in the GitHub
  *      
- *      <TODO - ADD GITHUB LINK>
+ *                                    More information can be found in the GitHub. PROVIDED UNDER THE MIT LICENSE
+ *                                                  https://github.com/neopolitans/EmbeddedInputModule
  *      
- *      This module requires Unity Technologies' INPUT SYSTEM Package. If you do not have it, here's how to install it:
- *                                              (Remember to save your work and scene first.)
+ *                  This module requires Unity Technologies' INPUT SYSTEM Package. If you do not have it, here's how to install it:
+ *                                                      (Remember to save your work and scene first.)
  *      
  *      1. Head to the top bar (where File, Edit, etc... are)
  *      
@@ -33,28 +32,28 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // The following preprocessor directives are settings. Uncomment settings to enable them and comment them to disable them. Each one has a descriptor.
-// MSG - Debug Message | OPT - Optimization | CFT - Compatibiltiy Feature | EXT - Extra Feature 
+// MSG - Debug Message | OPT - Optimization | CFT - Compatibiltiy Feature
 
-//#define EIM_DISABLEMSG_ActiveGamepadSet                   // DISABLE "Active Gamepad Set as..." MESSAGE
+//#define EIM_DISABLEMSG_ActiveGamepadSet                           // DISABLE "Active Gamepad Set as..." MESSAGE
 
-  #define EIM_DISABLEMSG_EnhancedTouchEnabledORDisabled     // DISABLE "Enhanced Touch Already Enabled/Disabled." MESSAGE
+//#define EIM_DISABLEMSG_EnhancedTouchEnabledORDisabled             // DISABLE "Enhanced Touch Already Enabled/Disabled." MESSAGE
 
-  #define EIM_DISABLEMSG_EnhancedTouchNeedsToBeEnabled      // DISABLE "Enhanced Touch Needs to be enabled to use this member or method. Call Input.EnableTouch()" MESSAGE
-                                                            // touchCount, touches, touchSupported and GetTouch require this system to be enabled to be used.
+//#define EIM_DISABLEMSG_EnhancedTouchNeedsToBeEnabled              // DISABLE "Enhanced Touch Needs to be enabled to use this member or method. Call Input.EnableTouch()" MESSAGE
+                                                                    // touchCount, touches, touchSupported and GetTouch require this system to be enabled to be used.
 
-  #define EIM_RESTRICTCFT_anyKeyANDanyKeyDown               // RESTRICT anyKey and anyKeyDown to only reading Keyboard.current.anyKey.           
-                                                            // Otherwise, after every Input Update each button for each KeyCode is retrieved, using ConvertKeyCode()
-                                                            // then TryGetPressed & TryGetHeld is called for each to determine if any Keyboard, Mouse or Gamepad button is held and
-                                                            // pressed that frame. If *ANY* button is needed, disable this restriction for the full detection at a performance cost.
+  #define EIM_RESTRICTCFT_anyKeyANDanyKeyDown                       // RESTRICT anyKey and anyKeyDown to only reading Keyboard.current.anyKey.           
+                                                                    // Otherwise, after every Input Update each button for each KeyCode is retrieved, using ConvertKeyCode()
+                                                                    // then TryGetPressed & TryGetHeld is called for each to determine if any Keyboard, Mouse or Gamepad button is held and
+                                                                    // pressed that frame. If *ANY* button is needed, disable this restriction for the full detection at a performance cost.
 
-//#define EIM_RESTRICTCFT_JoystickNameGamepadNamesOnly      // RESTRICT GetJoystickNames() to only get names of found Gamepad devices that are added to the List
-                                                            // m_gamepads (list of DeviceIdentifiers). Micro-optimization if other device names aren't required. 
+//#define EIM_RESTRICTCFT_JoystickNameGamepadNamesOnly              // RESTRICT GetJoystickNames() to only get names of found Gamepad devices that are added to the List
+                                                                    // m_gamepads (list of DeviceIdentifiers). Micro-optimization if other device names aren't required. 
 
-//#define EIM_DISABLEOPT_SingleGamepadKeycodeCheck          // DISABLE the single keycode value check in IsAGamepadKeycode(), which is a micro-optimization. 
-                                                            // Use this setting if more keycodes have been added after Keycode 509 that are not Joystick keycodes
+//#define EIM_DISABLEOPT_SingleGamepadKeycodeCheck                  // DISABLE the single keycode value check in IsAGamepadKeycode(), which is a micro-optimization. 
+                                                                    // Use this setting if more keycodes have been added after Keycode 509 that are not Joystick keycodes
 
-//#define EIM_ENABLEOPT_DisableDeviceChangedExtraCases      // DISABLE UsageChagned, ConfiguratonChanged, SoftReset and HardReset cases in DeviceChanged(). 
-                                                            // A micro-optimization if you do not need them as these are left in for extensibility.
+  #define EIM_ENABLEOPT_DisableDeviceChangedExtraCases              // DISABLE UsageChagned, ConfiguratonChanged, SoftReset and HardReset cases in DeviceChanged(). 
+                                                                    // A micro-optimization if you do not need them as these are left in for extensibility.
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                        EMBEDDED INPUT MODULE | IDE SUPPRESSIONS
@@ -65,7 +64,7 @@
 
 #pragma warning disable IDE1006         // Disables IDE1006 - Naming rule violation: These words must begin with upper case characters: <...>
                                         // Occurs when any member, method, constructor, class, struct or interface starts with a lower case letter.
-                                        
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #region EMBEDDED INPUT MANAGER
