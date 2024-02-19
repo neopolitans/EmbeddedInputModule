@@ -78,12 +78,30 @@ using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.EnhancedTouch;
 
 /// <summary>
+/// To globally mark any EmbeddedInputModule and OptionalModule classes as having accessibility configurations. <br/>
+/// This should not be inherited by classes which can be decoupled from EmbeddedInputModule.
+/// </summary>
+public interface IAccessibilityConfigurable
+{
+    /// <summary>
+    /// Whether the Accessibility Feature(s) of the inheriting class are enabled.
+    /// </summary>
+    public bool IsAccessibilityEnabled { get; }
+
+    /// <summary>
+    /// Enable or Disable the Accessibility Feature(s) of the inheriting class.
+    /// </summary>
+    /// <param name="setting"></param>
+    public void SetAccessibility(bool setting);
+}
+
+/// <summary>
 /// A class dedicated to handling the new InputSystem and providing methods and members that enable drag-and-drop compatibility with LegacyInputSystem. <br/>
 /// Requires Unity's InputSystem package. (1.6.3 or later advised).
 /// </summary>
 public static class EmbeddedInputModule
 {
-    #region REGION: SUB CLASSES
+    #region REGION: ENUMS
 
     /// <summary>
     /// An Enum describing the type of device.
@@ -123,6 +141,32 @@ public static class EmbeddedInputModule
         Generic
     }
 
+    /// <summary>
+    /// A list of available Controller Buttons, minus Start and Select. <br/>
+    /// For the best platform compatibility, Start and Select buttons are not available for this.
+    /// </summary>
+    [System.Serializable]
+    public enum GamepadControl
+    {
+        LeftStickButton,
+        RightStickButton,
+        LeftShoulder,
+        RightShoulder,
+        LeftTrigger,
+        RightTrigger,
+        ButtonNorth,
+        ButtonSouth,
+        ButtonEast,
+        ButtonWest,
+        DPadUp,
+        DPadDown,
+        DPadLeft,
+        DPadRight
+    }
+
+    #endregion
+
+    #region REGION: SUB CLASSES
     // DeviceIdentifier has support for Gamepads, Keyboards, Mice and Pens -> it's a wrapper for InputDevice.
 
     // This is used to better identify Gamepads with margin of error for precision though that is only one use of this class.
@@ -285,7 +329,7 @@ public static class EmbeddedInputModule
 
     // Unused as of yet, planned use for systems that are being investigated with no currently known API translations.
     /// <summary>
-    /// An exception thrown when no corresponding API exists in the input system yet for translating from LegacyInputModule.
+    /// An exception thrown when No Corresponding API exists in the Input System yet for translating from LegacyInputModule.
     /// </summary>
     [Serializable]
     public class NoCorrespondingInputSystemAPIException : Exception
@@ -404,6 +448,7 @@ public static class EmbeddedInputModule
     }
 
     #endregion
+
     // MAIN CLASS
 
     // - Public Members
@@ -1272,7 +1317,8 @@ public static class EmbeddedInputModule
 
         return gotValue;
     }
-    
+
+    #region KeyCode Related Methods
     // Keyboard Keycodes are assigned from 0 to 322.
     // 0 (KeyCode.None) is counted as a keyboard key otherwise and will return false if there is no Keyboard device connected.
     /// <summary>
@@ -1511,6 +1557,89 @@ public static class EmbeddedInputModule
     }
 
     /// <summary>
+    /// Convert the GamepadControl enum value to a corresponding KeyCode value.
+    /// </summary>
+    /// <param name="control">The GamepadControl value to convert.</param>
+    /// <returns></returns>
+    public static KeyCode GamepadControlToKeyCode(GamepadControl control)
+    {
+        switch (control)
+        {
+            default: return KeyCode.None;
+            case GamepadControl.LeftStickButton: return KeyCode.JoystickButton0;
+            case GamepadControl.RightStickButton: return KeyCode.JoystickButton1;
+            case GamepadControl.LeftShoulder: return KeyCode.JoystickButton2;
+            case GamepadControl.RightShoulder: return KeyCode.JoystickButton3;
+            case GamepadControl.LeftTrigger: return KeyCode.JoystickButton4;
+            case GamepadControl.RightTrigger: return KeyCode.JoystickButton5;
+            case GamepadControl.ButtonNorth: return KeyCode.JoystickButton6;
+            case GamepadControl.ButtonSouth: return KeyCode.JoystickButton7;
+            case GamepadControl.ButtonEast: return KeyCode.JoystickButton8;
+            case GamepadControl.ButtonWest: return KeyCode.JoystickButton9;
+            case GamepadControl.DPadUp: return KeyCode.JoystickButton10;
+            case GamepadControl.DPadDown: return KeyCode.JoystickButton11;
+            case GamepadControl.DPadLeft: return KeyCode.JoystickButton12;
+            case GamepadControl.DPadRight: return KeyCode.JoystickButton13;
+        }
+    }
+    #endregion
+
+    /// <summary>
+    /// Convert the provided GamepadControl to it's relavent input.
+    /// </summary>
+    /// <param name="control">The GamepadCotnrol value to query for the corresponding Gamepad Button.</param>
+    /// <returns></returns>
+    public static bool GamepadControlToInput(GamepadControl control)
+    {
+        switch (control)
+        {
+            default: return false;
+            case GamepadControl.LeftStickButton: return LeftStickButton;
+            case GamepadControl.RightStickButton: return RightStickButton;
+            case GamepadControl.LeftShoulder: return LeftShoulder;
+            case GamepadControl.RightShoulder: return RightShoulder;
+            case GamepadControl.LeftTrigger: return LeftTrigger;
+            case GamepadControl.RightTrigger: return RightTrigger;
+            case GamepadControl.ButtonNorth: return ButtonNorth;
+            case GamepadControl.ButtonSouth: return ButtonSouth;
+            case GamepadControl.ButtonEast: return ButtonEast;
+            case GamepadControl.ButtonWest: return ButtonWest;
+            case GamepadControl.DPadUp: return DpadUp;
+            case GamepadControl.DPadDown: return DpadDown;
+            case GamepadControl.DPadLeft: return DpadLeft;
+            case GamepadControl.DPadRight: return DpadRight;
+        }
+    }
+
+    /// <summary>
+    /// Convert the provided GamepadControl to a string name. <br/>
+    /// Included to make string-building a directory easier in cases where developers have a Resources folder for Input Icons.
+    /// </summary>
+    /// <param name="control"></param>
+    /// <returns></returns>
+    public static string GamepadControlAsString(GamepadControl control)
+    {
+        switch (control)
+        {
+            default: return "N/A";
+            case GamepadControl.LeftStickButton: return "LeftStickButton";
+            case GamepadControl.RightStickButton: return "RightStickButton";
+            case GamepadControl.LeftShoulder: return "LeftShoulder";
+            case GamepadControl.RightShoulder: return "RightShoulder";
+            case GamepadControl.LeftTrigger: return "LeftTrigger";
+            case GamepadControl.RightTrigger: return "RightTrigger";
+            case GamepadControl.ButtonNorth: return "ButtonNorth";
+            case GamepadControl.ButtonSouth: return "ButtonSouth";
+            case GamepadControl.ButtonEast: return "ButtonEast";
+            case GamepadControl.ButtonWest: return "ButtonWest";
+            case GamepadControl.DPadUp: return "DpadUp";
+            case GamepadControl.DPadDown: return "DpadDown";
+            case GamepadControl.DPadLeft: return "DpadLeft";
+            case GamepadControl.DPadRight: return "DpadRight";
+        }
+    }
+
+    /// <summary>
     /// A wrapper for InputSystem's Keyboard.SetIMECursorPosition. <br/>
     /// Refers to the current keyboard or does nothing if there isn't one.
     /// </summary>
@@ -1551,6 +1680,15 @@ public static class EmbeddedInputModule
             if (mousePresent && TryReadValue(Mouse.current.position, out Vector2 value)) return value;
             else return default;
         }
+    }
+
+    /// <summary>
+    /// Get the Mouse Movement for this frame. <br/>
+    /// As MouseDelta is polling the value from Mouse.current.delta, some inconsistencies may occur.
+    /// </summary>
+    public static Vector2 mouseDelta
+    {
+        get { return mousePresent ? Mouse.current.delta.TryReadValue(out Vector2 val) ? val : Vector2.zero : Vector2.zero; }
     }
 
     // - Accelerometer Data
