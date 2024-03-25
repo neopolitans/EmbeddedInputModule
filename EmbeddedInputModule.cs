@@ -454,7 +454,7 @@ public static class EmbeddedInputModule
     // - Public Members
     /// <summary>
     /// Get the Current Gamepad. <br/>
-    /// This is the gamepad from the list that last had any player input.
+    /// This is the gamepad, Keyboard or Mouse from the list that last had any player input.
     /// </summary>
     public static DeviceIdentifier CurrentGamepad
     {
@@ -994,7 +994,7 @@ public static class EmbeddedInputModule
         foreach (InputDevice device in inputDevices)
         {
             DeviceType currentDeviceType = IdentifyDevice(device);
-            if (currentDeviceType == DeviceType.Gamepad) { m_gamepads.Add(new DeviceIdentifier(device, currentDeviceType)); }
+            m_gamepads.Add(new DeviceIdentifier(device, currentDeviceType));
         }
 
         InputSystem.onDeviceChange += DeviceChanged;
@@ -1093,6 +1093,7 @@ public static class EmbeddedInputModule
                 identity = di; return true;
             }
         }
+
         return false;
     }
 
@@ -1112,18 +1113,15 @@ public static class EmbeddedInputModule
             // Try set the input device
             switch (type)
             {
-                default: break;
-                case DeviceType.Gamepad:
+                // Update 
+                default:
+
                     // TryFindDeviceIdentifierFromInputDevice returned an identifier, extra instructions have been avoided and just pass-by-reference directly.
                     // Can't do anything if a Device Identifier wasn't found. Comparing names won't work if multiple of the same controller brand are connected.
-                    if (identifier != null) {
+                    if (identifier != null)
+                    {
                         CurrentGamepad = identifier;
                     }
-                    break;
-
-                case DeviceType.Keyboard or DeviceType.Mouse:
-                    // Current isn't set to null unless disconencted. Don't need to null it here.
-                    PlatformIcons = InputIconDisplayType.PC;
                     break;
             }
         }
@@ -1173,6 +1171,7 @@ public static class EmbeddedInputModule
                 else
                 {
                     // Filter through device IDs to see if the removed one is in the list.
+                    // (?) Could replace with m_gamepads.Contains? The objects are different but internals are identical.
                     DeviceIdentifier deviceID = null;
                     foreach (DeviceIdentifier id in m_gamepads)
                     {
